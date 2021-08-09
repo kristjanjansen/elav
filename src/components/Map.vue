@@ -12,12 +12,10 @@ const crs = new L.Proj.CRS(
   }
 );
 
-import kuressaareRoads from "/public/kuressaare_roads.json";
-
 const proxy = "https://api.allorigins.win/raw?url=";
 
 const files = [
-  "https://strateegia.tallinn.ee/static/81ca1c90e2e6d0c9a1b39c80c05712db/S06-tanavatuubid-local.geojson",
+  //"https://strateegia.tallinn.ee/static/81ca1c90e2e6d0c9a1b39c80c05712db/S06-tanavatuubid-local.geojson",
   "https://strateegia.tallinn.ee/static/c3751fb1e2295b2ecc43d9792874194b/S06-tanavatuubid-town_square.geojson",
   "https://strateegia.tallinn.ee/static/a4c3419c61e3e8203ce3bc5e872e4562/S06-tanavatuubid-city_place.geojson",
 
@@ -37,7 +35,7 @@ const files = [
 const mapRef = ref(null);
 
 const colors = {
-  greenLight: "#ADE6B0",
+  //greenLight: "#ADE6B0",
   greenMiddle: "#3AAA64",
   greenDark: "#0D7430",
   purpleLight: "#C9AFEF",
@@ -53,11 +51,11 @@ const views = [
   { title: "Tallinn", data: [[59.42350215252274, 24.76599521934987], 13] },
   {
     title: "Kuressaare",
-    data: [[58.252932513634654, 22.485026672948155], 18],
+    data: [[58.252932513634654, 22.485026672948155], 15],
   },
 ];
 
-const activeView = ref(1);
+const activeView = ref(0);
 
 const map = ref(null);
 
@@ -67,15 +65,16 @@ const onClick = (i) => {
 };
 
 onMounted(() => {
+  // Estonia
   //const view = [[58.77, 25.04], 8]
 
   map.value = L.map(mapRef.value, { zoom: 19 }).setView(
     ...views[activeView.value].data
   );
 
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(
-    map.value
-  );
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    maxZoom: 14,
+  }).addTo(map.value);
 
   map.value.on("moveend", (e) =>
     console.log(map.value.getCenter(), map.value.getZoom())
@@ -120,32 +119,10 @@ onMounted(() => {
       }).addTo(map.value);
     })
   );
-
-  // L.geoJSON(kuressaareRoads.features, {
-  //   color: "black",
-  //   weight: 2.5,
-  //   opacity: 1,
-  // }).addTo(map.value);
 });
 
 // https://gis.saaremaavald.ee/arcgis/services/Rasteralused/VANAD_KAARDID_WMS/MapServer/WMSServer
 // 0,1,2,3
-
-/*
-
-https://strateegia.tallinn.ee/static/81ca1c90e2e6d0c9a1b39c80c05712db/S06-tanavatuubid-local.geojson
-https://strateegia.tallinn.ee/static/c3751fb1e2295b2ecc43d9792874194b/S06-tanavatuubid-town_square.geojson
-https://strateegia.tallinn.ee/static/a4c3419c61e3e8203ce3bc5e872e4562/S06-tanavatuubid-city_place.geojson
-
-https://strateegia.tallinn.ee/static/a865b991e4fd4736cf3b1f82d8529ded/S06-tanavatuubid-connector.geojson
-https://strateegia.tallinn.ee/static/faa9b32f38a8db601ae28466fae7c77c/S06-tanavatuubid-high_street.geojson
-https://strateegia.tallinn.ee/static/059a0ab6b99510d2a0eb83c1cc663010/S06-tanavatuubid-city_street.geojson
-
-https://strateegia.tallinn.ee/static/5bd7fc2889030fd799ada3be48d16e6c/S06-tanavatuubid-core_road.geojson
-https://strateegia.tallinn.ee/static/17b7b7a33f2d735f9d517ce9b8f3f1e1/S06-tanavatuubid-high_road.geojson
-https://strateegia.tallinn.ee/static/aa88f9af8b79eb42ed37b4c0e9ef6c01/S06-tanavatuubid-city_hub.geojson
-
-*/
 </script>
 
 <template>
@@ -165,7 +142,7 @@ https://strateegia.tallinn.ee/static/aa88f9af8b79eb42ed37b4c0e9ef6c01/S06-tanava
       border: 2px solid rgba(0, 0, 0, 0.2);
       background-clip: padding-box;
       border-radius: 4px;
-      padding: 20px;
+      padding: 12px;
     "
   >
     <div
@@ -175,7 +152,7 @@ https://strateegia.tallinn.ee/static/aa88f9af8b79eb42ed37b4c0e9ef6c01/S06-tanava
       :style="{
         cursor: 'pointer',
         color: i === activeView ? 'black' : '#aaa',
-        paddingBottom: '4px',
+        padding: '4px',
         fontWeight: 'bold',
       }"
     >
